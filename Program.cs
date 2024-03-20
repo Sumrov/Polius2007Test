@@ -1,5 +1,3 @@
-using Binance.Net.Clients;
-
 namespace Polius2007Test
 {
     internal static class Program

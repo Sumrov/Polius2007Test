@@ -33,7 +33,7 @@ namespace Polius2007Test
             bybitTitleLabl = new Label();
             kucoinTiteLabl = new Label();
             binanceTickerLabl = new Label();
-            BybitTickerLabl = new Label();
+            bybitTickerLabl = new Label();
             kucoinTickerLabl = new Label();
             tickersComboBox = new ComboBox();
             SuspendLayout();
@@ -73,13 +73,13 @@ namespace Polius2007Test
             binanceTickerLabl.Size = new Size(0, 15);
             binanceTickerLabl.TabIndex = 4;
             // 
-            // BybitTickerLabl
+            // bybitTickerLabl
             // 
-            BybitTickerLabl.AutoSize = true;
-            BybitTickerLabl.Location = new Point(80, 120);
-            BybitTickerLabl.Name = "BybitTickerLabl";
-            BybitTickerLabl.Size = new Size(0, 15);
-            BybitTickerLabl.TabIndex = 5;
+            bybitTickerLabl.AutoSize = true;
+            bybitTickerLabl.Location = new Point(80, 120);
+            bybitTickerLabl.Name = "bybitTickerLabl";
+            bybitTickerLabl.Size = new Size(0, 15);
+            bybitTickerLabl.TabIndex = 5;
             // 
             // kucoinTickerLabl
             // 
@@ -93,7 +93,6 @@ namespace Polius2007Test
             // 
             tickersComboBox.DisplayMember = "0";
             tickersComboBox.FormattingEnabled = true;
-            tickersComboBox.Items.AddRange(new object[] { "BNB/USDT", "ETH/USDT" });
             tickersComboBox.Location = new Point(10, 20);
             tickersComboBox.Name = "tickersComboBox";
             tickersComboBox.Size = new Size(99, 23);
@@ -107,7 +106,7 @@ namespace Polius2007Test
             ClientSize = new Size(259, 198);
             Controls.Add(tickersComboBox);
             Controls.Add(kucoinTickerLabl);
-            Controls.Add(BybitTickerLabl);
+            Controls.Add(bybitTickerLabl);
             Controls.Add(binanceTickerLabl);
             Controls.Add(kucoinTiteLabl);
             Controls.Add(bybitTitleLabl);
@@ -126,7 +125,7 @@ namespace Polius2007Test
         private Label bybitTitleLabl;
         private Label kucoinTiteLabl;
         private Label binanceTickerLabl;
-        private Label BybitTickerLabl;
+        private Label bybitTickerLabl;
         private Label kucoinTickerLabl;
         private ComboBox tickersComboBox;
     }

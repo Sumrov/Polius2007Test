@@ -1,6 +1,6 @@
 ﻿using CryptoExchange.Net.Objects.Sockets;
 using Kucoin.Net.Clients;
-using Kucoin.Net.Interfaces.Clients;
+using Kucoin.Net.Objects.Models.Spot;
 using static Polius2007Test.KucoinDataProvider;
 
 namespace Polius2007Test
@@ -8,36 +8,33 @@ namespace Polius2007Test
     public interface IKucoinDataProvider
     {
         public event EventHandler<OnDataChangedEventArgs> OnDataChanged;
-        Task Start(string symbol);
-        Task UpdateSymbol(string symbol);
+        Task Start(KucoinSymbol symbol);
+        Task UpdateSymbol(KucoinSymbol symbol);
         Task Stop();
     }
 
     public class KucoinDataProvider : IKucoinDataProvider
     {
         public event EventHandler<OnDataChangedEventArgs> OnDataChanged;
-        public class OnDataChangedEventArgs
+        public class OnDataChangedEventArgs : EventArgs
         {
-            public DataEvent<Kucoin.Net.Objects.Models.Spot.Socket.KucoinStreamTick> Data;
+            public required DataEvent<Kucoin.Net.Objects.Models.Spot.Socket.KucoinStreamTick> Data;
         }
-        private IKucoinSocketClient _socketClient;
+        public KucoinSymbol[] Symbols;
+        private readonly KucoinSocketClient _socketClient;
         private UpdateSubscription _subscription;
-        public string[] Symbols =
-        [
-            "BTC-USDT",
-            "ETH-USDT"
-        ];
 
         public KucoinDataProvider()
         {
             _socketClient = new KucoinSocketClient();
 
-            Start(Symbols[0]).Wait();
+            LoadSymbols().Wait();
+            Start(Symbols.First()).Wait();
         }
 
-        public async Task Start(string symbol)
+        public async Task Start(KucoinSymbol symbol)
         {
-            var subResult = await _socketClient.SpotApi.SubscribeToTickerUpdatesAsync(symbol, data =>
+            var subResult = await _socketClient.SpotApi.SubscribeToTickerUpdatesAsync(symbol.Name, data =>
             {
                 OnDataChanged?.Invoke(this, new() { Data = data });
             });
@@ -46,7 +43,7 @@ namespace Polius2007Test
                 _subscription = subResult.Data;
         }
 
-        public async Task UpdateSymbol(string symbol)
+        public async Task UpdateSymbol(KucoinSymbol symbol)
         {
             await Stop();
             await Start(symbol);
@@ -55,6 +52,16 @@ namespace Polius2007Test
         public async Task Stop()
         {
             await _socketClient.UnsubscribeAsync(_subscription);
+        }
+
+        private async Task LoadSymbols()
+        {
+            using KucoinRestClient socketClient = new();
+            var result = await socketClient.SpotApi.ExchangeData.GetSymbolsAsync();
+            if (!result.Success)
+                throw new Exception("Error Load symbols");
+            else
+                Symbols = result.Data.OrderBy(o => o.Name).ToArray();
         }
     }
 }
